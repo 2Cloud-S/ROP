@@ -5,7 +5,6 @@ import { useToast } from "@/hooks/use-toast";
 import { PlantVisual } from "@/components/plant-visual";
 import { Shield, Sword, Zap, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "wouter";
 import type { BattleAction } from "@workspace/game-core";
 
 export default function Battle() {

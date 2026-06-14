@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -46,6 +46,14 @@ function ErrorScreen({ error }: { error: string }) {
   );
 }
 
+function LayoutRoute() {
+  return (
+    <Layout>
+      <Outlet />
+    </Layout>
+  );
+}
+
 function Router() {
   const { initialized, loading, error, init } = useGameStore();
 
@@ -57,23 +65,19 @@ function Router() {
   if (!initialized || loading) return <Splash />;
 
   return (
-    <Switch>
+    <Routes>
       {/* AR is a full-screen overlay route, rendered outside the tabbed layout */}
-      <Route path="/ar" component={AR} />
-      <Route>
-        <Layout>
-          <Switch>
-            <Route path="/" component={Home} />
-            <Route path="/collection" component={Collection} />
-            <Route path="/codex/:slug" component={Codex} />
-            <Route path="/tasks" component={Tasks} />
-            <Route path="/battle" component={Battle} />
-            <Route path="/profile" component={Profile} />
-            <Route component={NotFound} />
-          </Switch>
-        </Layout>
+      <Route path="/ar" element={<AR />} />
+      <Route element={<LayoutRoute />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/collection" element={<Collection />} />
+        <Route path="/codex/:slug" element={<Codex />} />
+        <Route path="/tasks" element={<Tasks />} />
+        <Route path="/battle" element={<Battle />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
-    </Switch>
+    </Routes>
   );
 }
 
@@ -81,9 +85,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+        <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "")}>
           <Router />
-        </WouterRouter>
+        </BrowserRouter>
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>

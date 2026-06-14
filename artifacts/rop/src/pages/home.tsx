@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import { useGameStore } from "@/store/gameStore";
 import { useSpeciesBySlug, useEvolutions } from "@/hooks/useContent";
 import { GROWTH_ACTIONS, LEVEL_TOTAL_XP, nextEvolution } from "@workspace/game-core";
@@ -134,7 +134,7 @@ export default function Home() {
 
         <div className="absolute top-0 left-0">
           <Link
-            href="/ar"
+            to="/ar"
             className="flex items-center gap-1.5 bg-card/80 backdrop-blur border border-border px-3 py-1.5 rounded-full text-xs font-mono font-bold shadow-sm hover:border-primary transition-colors"
           >
             <Camera size={14} /> AR

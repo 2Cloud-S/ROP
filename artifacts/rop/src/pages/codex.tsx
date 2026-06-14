@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, Link } from "wouter";
+import { useParams, Link } from "react-router-dom";
 import { useSpeciesBySlug, useCodexBySlug } from "@/hooks/useContent";
 import { useGameStore } from "@/store/gameStore";
 import { PlantVisual } from "@/components/plant-visual";
@@ -27,7 +27,7 @@ export default function Codex() {
 
   return (
     <div className="py-4 pb-24">
-      <Link href="/collection" className="inline-flex items-center text-sm font-mono text-muted-foreground hover:text-foreground mb-6 transition-colors">
+      <Link to="/collection" className="inline-flex items-center text-sm font-mono text-muted-foreground hover:text-foreground mb-6 transition-colors">
         <ArrowLeft size={16} className="mr-2" /> Back to Codex
       </Link>
 

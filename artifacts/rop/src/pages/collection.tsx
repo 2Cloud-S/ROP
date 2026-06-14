@@ -1,7 +1,7 @@
 import React from "react";
 import { useGameStore } from "@/store/gameStore";
 import { useSpecies } from "@/hooks/useContent";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import { PlantVisual } from "@/components/plant-visual";
 import { motion } from "framer-motion";
 
@@ -30,7 +30,7 @@ export default function Collection() {
             const isDiscovered = player.discoveries.includes(species.slug);
             
             return (
-              <Link key={species.slug} href={`/codex/${species.slug}`}>
+              <Link key={species.slug} to={`/codex/${species.slug}`}>
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
