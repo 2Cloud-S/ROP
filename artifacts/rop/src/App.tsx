@@ -13,6 +13,7 @@ import Collection from "@/pages/collection";
 import Codex from "@/pages/codex";
 import Tasks from "@/pages/tasks";
 import Battle from "@/pages/battle";
+import Profile from "@/pages/profile";
 import AR from "@/pages/ar";
 import NotFound from "@/pages/not-found";
 
@@ -56,17 +57,23 @@ function Router() {
   if (!initialized || loading) return <Splash />;
 
   return (
-    <Layout>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/collection" component={Collection} />
-        <Route path="/codex/:slug" component={Codex} />
-        <Route path="/tasks" component={Tasks} />
-        <Route path="/battle" component={Battle} />
-        <Route path="/ar" component={AR} />
-        <Route component={NotFound} />
-      </Switch>
-    </Layout>
+    <Switch>
+      {/* AR is a full-screen overlay route, rendered outside the tabbed layout */}
+      <Route path="/ar" component={AR} />
+      <Route>
+        <Layout>
+          <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/collection" component={Collection} />
+            <Route path="/codex/:slug" component={Codex} />
+            <Route path="/tasks" component={Tasks} />
+            <Route path="/battle" component={Battle} />
+            <Route path="/profile" component={Profile} />
+            <Route component={NotFound} />
+          </Switch>
+        </Layout>
+      </Route>
+    </Switch>
   );
 }
 

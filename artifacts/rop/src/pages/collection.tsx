@@ -14,7 +14,7 @@ export default function Collection() {
   return (
     <div className="py-6 flex flex-col h-full">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold font-sans tracking-tight">Codex</h1>
+        <h1 className="text-3xl font-bold font-sans tracking-tight">Collection</h1>
         <p className="text-muted-foreground font-mono text-sm mt-1">
           {player.discoveries.length} / {allSpecies.length || "?"} Species Discovered
         </p>

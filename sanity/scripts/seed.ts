@@ -47,6 +47,27 @@ const taskId = (slug: string) => `task-${slug}`;
 const rewardId = (type: string) => `reward-${type}`;
 const codexId = (slug: string) => `codex-${slug}`;
 
+/**
+ * Documents from earlier seed revisions that are no longer part of the canonical
+ * roster. createOrReplace only upserts by _id, so removed species/paths must be
+ * deleted explicitly. Deleting a missing document is a safe no-op.
+ */
+const STALE_IDS = [
+  "species-dewbud",
+  "species-rootkin",
+  "species-worldroot",
+  "codex-dewbud",
+  "codex-rootkin",
+  "codex-worldroot",
+  "evo-mossling-azure-orchid",
+  "evo-azure-orchid-solar-lotus",
+  "evo-moon-fern-celestial-rose",
+  "evo-rootkin-thorn-sage",
+  "evo-thorn-sage-worldroot",
+  "evo-dewbud-crystal-vine",
+  "evo-leaflet-ember-blossom",
+];
+
 let keyCounter = 0;
 const nextKey = () => `k${(keyCounter++).toString(36)}`;
 
@@ -62,6 +83,10 @@ function toPortableText(paragraphs: string[]) {
 
 async function seed() {
   const tx = client.transaction();
+
+  for (const id of STALE_IDS) {
+    tx.delete(id);
+  }
 
   for (const r of rarities) {
     tx.createOrReplace({
@@ -148,11 +173,12 @@ async function seed() {
 
   const result = await tx.commit();
   console.log(
-    `Seeded Sanity dataset "${dataset}": ${result.results.length} documents written.`,
+    `Seeded Sanity dataset "${dataset}": ${result.results.length} mutations applied.`,
   );
   console.log(
     `  ${rarities.length} rarities, ${species.length} species, ${evolutions.length} evolution paths, ${tasks.length} tasks, ${rewards.length} rewards, ${codex.length} codex entries.`,
   );
+  console.log(`  ${STALE_IDS.length} stale documents removed (if present).`);
 }
 
 seed().catch((err) => {

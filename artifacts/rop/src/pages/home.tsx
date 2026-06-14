@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "wouter";
 import { useGameStore } from "@/store/gameStore";
 import { useSpeciesBySlug } from "@/hooks/useContent";
 import { GROWTH_ACTIONS, LEVEL_TOTAL_XP } from "@workspace/game-core";
@@ -7,7 +8,7 @@ import { ResourceBar } from "@/components/resource-bar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ArrowUpCircle, AlertCircle } from "lucide-react";
+import { Sparkles, ArrowUpCircle, AlertCircle, Camera } from "lucide-react";
 import type { GrowthActionId } from "@workspace/game-core";
 
 export default function Home() {
@@ -124,6 +125,15 @@ export default function Home() {
           <div className="bg-card/80 backdrop-blur border border-border px-3 py-1 rounded-full text-xs font-mono font-bold shadow-sm">
             Lvl {plant.level}
           </div>
+        </div>
+
+        <div className="absolute top-0 left-0">
+          <Link
+            href="/ar"
+            className="flex items-center gap-1.5 bg-card/80 backdrop-blur border border-border px-3 py-1.5 rounded-full text-xs font-mono font-bold shadow-sm hover:border-primary transition-colors"
+          >
+            <Camera size={14} /> AR
+          </Link>
         </div>
       </div>
 

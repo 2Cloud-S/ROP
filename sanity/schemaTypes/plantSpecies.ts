@@ -62,6 +62,7 @@ export const plantSpecies = defineType({
       title: "Main Image",
       type: "image",
       options: { hotspot: true },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "gallery",

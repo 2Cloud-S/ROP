@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "wouter";
 import { useGameStore } from "@/store/gameStore";
-import { Leaf, BookOpen, CheckSquare, Swords, Camera } from "lucide-react";
+import { Leaf, BookOpen, CheckSquare, Swords, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -35,10 +35,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <nav className="fixed bottom-0 left-0 right-0 h-16 bg-card/80 backdrop-blur-xl border-t border-border z-40">
         <div className="max-w-md mx-auto h-full flex items-center justify-around px-2">
           <NavItem href="/" icon={<Leaf size={20} />} label="Garden" active={location === "/"} />
-          <NavItem href="/collection" icon={<BookOpen size={20} />} label="Codex" active={location.startsWith("/collection") || location.startsWith("/codex")} />
           <NavItem href="/tasks" icon={<CheckSquare size={20} />} label="Tasks" active={location === "/tasks"} />
+          <NavItem href="/collection" icon={<BookOpen size={20} />} label="Collection" active={location.startsWith("/collection") || location.startsWith("/codex")} />
           <NavItem href="/battle" icon={<Swords size={20} />} label="Battle" active={location === "/battle"} />
-          <NavItem href="/ar" icon={<Camera size={20} />} label="AR" active={location === "/ar"} />
+          <NavItem href="/profile" icon={<User size={20} />} label="Profile" active={location === "/profile"} />
         </div>
       </nav>
       
