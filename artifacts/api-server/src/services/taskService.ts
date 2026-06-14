@@ -5,6 +5,7 @@ import {
   rollDiscovery,
   type PlayerSave,
 } from "@workspace/game-core";
+import type { SpeciesContent } from "@workspace/sanity-content";
 import { ContentAPI } from "../lib/content";
 import { toDiscoveryCandidates } from "../lib/mappers";
 import { AppError } from "../lib/envelope";
@@ -12,7 +13,7 @@ import { AppError } from "../lib/envelope";
 export interface TaskResult {
   player: PlayerSave;
   reward: { kind: string; amount: number };
-  discovered: string | null;
+  discovered: SpeciesContent | null;
   newlyDiscovered: boolean;
 }
 
@@ -44,7 +45,7 @@ export async function completeTask(
   }
 
   let next: PlayerSave = structuredClone(player);
-  let discovered: string | null = null;
+  let discovered: SpeciesContent | null = null;
   let newlyDiscovered = false;
 
   switch (reward.kind) {
@@ -72,7 +73,7 @@ export async function completeTask(
       if (slug) {
         const result = addDiscovery(next, slug);
         next = result.player;
-        discovered = slug;
+        discovered = species.find((s) => s.slug === slug) ?? null;
         newlyDiscovered = result.newlyDiscovered;
       }
       break;

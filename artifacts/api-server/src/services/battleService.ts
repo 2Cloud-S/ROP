@@ -14,6 +14,7 @@ import {
   type BattleState,
   type BattleAction,
 } from "@workspace/game-core";
+import type { SpeciesContent } from "@workspace/sanity-content";
 import { ContentAPI } from "../lib/content";
 import { coerceRarity, toSpeciesRef, toDiscoveryCandidates } from "../lib/mappers";
 import { AppError } from "../lib/envelope";
@@ -52,7 +53,7 @@ export interface BattleActionResult {
     outcome: "won" | "lost";
     xp: number;
     resources?: { water: number; nutrients: number; sunlight: number };
-    discovered?: string | null;
+    discovered?: SpeciesContent | null;
     newlyDiscovered?: boolean;
   };
 }
@@ -63,6 +64,16 @@ export async function performBattleAction(
   action: BattleAction,
   demoMode: boolean,
 ): Promise<BattleActionResult> {
+  // Authority guard: the server only ever applies rewards for battles it
+  // transitions from "active" itself. A client cannot post an already-resolved
+  // ("won"/"lost") battle to mint rewards without actually fighting.
+  if (battle.status !== "active") {
+    throw new AppError(
+      400,
+      "BATTLE_NOT_ACTIVE",
+      "This battle is already resolved.",
+    );
+  }
   const nextBattle = resolveBattleAction(battle, action);
 
   // Battle still ongoing — nothing to apply to the player yet.
@@ -89,7 +100,7 @@ export async function performBattleAction(
     }
     next.stats.battlesWon += 1;
 
-    let discovered: string | null = null;
+    let discovered: SpeciesContent | null = null;
     let newlyDiscovered = false;
     if (Math.random() < BATTLE_REWARDS.rareDiscoveryChance) {
       const species = await ContentAPI.species();
@@ -101,7 +112,7 @@ export async function performBattleAction(
       if (slug) {
         const result = addDiscovery(next, slug);
         next = result.player;
-        discovered = slug;
+        discovered = species.find((s) => s.slug === slug) ?? null;
         newlyDiscovered = result.newlyDiscovered;
       }
     }

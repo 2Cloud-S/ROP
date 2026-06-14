@@ -30,7 +30,12 @@ class TtlCache {
     const hit = this.store.get(key);
     if (hit && hit.expires > Date.now()) return hit.value as T;
     const value = await loader();
-    this.store.set(key, { value, expires: Date.now() + TTL_MS });
+    // Never cache an empty result: a CDN cold-start that briefly returns [] would
+    // otherwise poison the cache for the full TTL. Let the next request retry.
+    const isEmpty = Array.isArray(value) && value.length === 0;
+    if (!isEmpty) {
+      this.store.set(key, { value, expires: Date.now() + TTL_MS });
+    }
     return value;
   }
 

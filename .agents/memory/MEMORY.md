@@ -2,3 +2,5 @@
 - [Dev workflow stale build](dev-workflow-stale-build.md) — api-server dev builds at start; restart_workflow after backend edits or it serves the old bundle.
 - [ROP API shape](rop-api-shape.md) — stateless game API: client round-trips full PlayerSave/BattleState; envelope {success,data}|{success,error}; no orval.
 - [ROP content via backend](rop-content-via-backend.md) — frontend reads Sanity only through cached /api/content/*; no VITE_SANITY_* env; app can't boot until dataset seeded (createSession needs species).
+- [Stateless authority guard](stateless-authority-guard.md) — reward endpoints must reject already-terminal client-posted state; Zod validation alone doesn't stop forged "won" battles.
+- [Sanity CDN cache poisoning](sanity-cdn-cache-poisoning.md) — never cache empty content arrays; a seed/CDN cold-start [] poisons the cache for the full TTL.
