@@ -35,19 +35,24 @@ export default function AR() {
     return () => clearTimeout(t);
   }, [showHint]);
 
+  const streamRef = useRef<MediaStream | null>(null);
+
   useEffect(() => {
-    let stream: MediaStream | null = null;
+    let cancelled = false;
 
     async function startCamera() {
       try {
-        stream = await navigator.mediaDevices.getUserMedia({
+        const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: "environment" },
         });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
         }
+        streamRef.current = stream;
         setHasPermission(true);
       } catch (err: any) {
+        if (cancelled) return;
         setHasPermission(false);
         setError(err?.message || "Camera access denied");
       }
@@ -56,11 +61,24 @@ export default function AR() {
     startCamera();
 
     return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
+      cancelled = true;
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
       }
     };
   }, []);
+
+  // The <video> element is only mounted once `hasPermission` is true, so the
+  // stream must be attached here — not inside startCamera, where videoRef is
+  // still null and srcObject would silently never be set (black screen).
+  useEffect(() => {
+    const video = videoRef.current;
+    if (hasPermission && streamRef.current && video) {
+      video.srcObject = streamRef.current;
+      video.play().catch(() => {});
+    }
+  }, [hasPermission]);
 
   useEffect(() => {
     return () => {
