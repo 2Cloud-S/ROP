@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 interface PlantVisualProps {
   speciesSlug?: string;
-  stage: 1 | 2 | 3 | 4;
+  stage: number;
   colors?: {
     primary?: string;
     glow?: string;
