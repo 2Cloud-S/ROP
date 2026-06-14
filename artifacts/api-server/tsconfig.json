@@ -10,10 +10,10 @@
   "include": ["src"],
   "references": [
     {
-      "path": "../../lib/db"
+      "path": "../../lib/game-core"
     },
     {
-      "path": "../../lib/api-zod"
+      "path": "../../lib/sanity-content"
     }
   ]
 }

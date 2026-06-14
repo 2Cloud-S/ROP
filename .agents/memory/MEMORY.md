@@ -1,0 +1,3 @@
+- [Composite lib typecheck](composite-lib-typecheck.md) — consumers fail TS6305 until `pnpm run typecheck:libs` (tsc --build) emits lib dist decls.
+- [Dev workflow stale build](dev-workflow-stale-build.md) — api-server dev builds at start; restart_workflow after backend edits or it serves the old bundle.
+- [ROP API shape](rop-api-shape.md) — stateless game API: client round-trips full PlayerSave/BattleState; envelope {success,data}|{success,error}; no orval.
