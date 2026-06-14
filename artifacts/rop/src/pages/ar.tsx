@@ -23,9 +23,17 @@ export default function AR() {
   const [rotation, setRotation] = useState(0);
   const [scale, setScale] = useState(1);
   const [shotUrl, setShotUrl] = useState<string | null>(null);
+  const [flash, setFlash] = useState(false);
+  const [showHint, setShowHint] = useState(true);
 
   const plant = useGameStore((s) => s.activePlant());
   const { data: species } = useSpeciesBySlug(plant?.speciesSlug);
+
+  useEffect(() => {
+    if (!showHint) return;
+    const t = setTimeout(() => setShowHint(false), 4500);
+    return () => clearTimeout(t);
+  }, [showHint]);
 
   useEffect(() => {
     let stream: MediaStream | null = null;
@@ -122,6 +130,29 @@ export default function AR() {
       ctx.restore();
     }
 
+    // Watermark: species name + game title.
+    const pad = Math.round(Math.min(w, h) * 0.045);
+    const nameSize = Math.round(Math.min(w, h) * 0.055);
+    const tagSize = Math.round(Math.min(w, h) * 0.032);
+    ctx.save();
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.shadowColor = "rgba(0,0,0,0.6)";
+    ctx.shadowBlur = Math.round(nameSize * 0.3);
+    if (species?.name) {
+      ctx.font = `700 ${nameSize}px ui-sans-serif, system-ui, sans-serif`;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText(species.name, pad, h - pad - tagSize * 1.4);
+    }
+    ctx.font = `600 ${tagSize}px ui-monospace, monospace`;
+    ctx.fillStyle = "rgba(120, 230, 170, 0.95)";
+    ctx.fillText("RISE OF THE PLANTS", pad, h - pad);
+    ctx.restore();
+
+    // Capture flash feedback.
+    setFlash(true);
+    setTimeout(() => setFlash(false), 220);
+
     try {
       canvas.toBlob((blob) => {
         if (!blob) return;
@@ -147,6 +178,27 @@ export default function AR() {
 
   return (
     <div className="fixed inset-0 z-50 bg-black flex flex-col">
+      {hasPermission === null && (
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+          <div className="relative mb-6">
+            <div className="w-16 h-16 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+            <Camera className="absolute inset-0 m-auto text-primary w-7 h-7" />
+          </div>
+          <h2 className="text-lg font-bold font-sans mb-1">Starting camera…</h2>
+          <p className="text-sm text-muted-foreground max-w-xs">
+            Allow camera access to project your plant into the real world.
+          </p>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-6 text-muted-foreground"
+            onClick={() => window.history.back()}
+          >
+            <X className="mr-2" size={16} /> Cancel
+          </Button>
+        </div>
+      )}
+
       {hasPermission === false && (
         <div className="flex-1 flex items-center justify-center p-6 text-center">
           <div className="bg-card p-6 rounded-xl border border-border max-w-sm">
@@ -189,6 +241,23 @@ export default function AR() {
           </div>
         )}
       </div>
+
+      {/* Placement instructions hint */}
+      {hasPermission && showHint && (
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 px-4 w-full max-w-sm pointer-events-none">
+          <div className="bg-background/60 backdrop-blur-md border border-border rounded-2xl px-4 py-3 text-center shadow-2xl animate-in fade-in slide-in-from-top-2">
+            <p className="text-sm font-bold">Point at a flat surface</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Rotate &amp; zoom to place your plant, then tap the shutter to capture.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Capture flash */}
+      {flash && (
+        <div className="absolute inset-0 z-40 bg-white pointer-events-none animate-out fade-out duration-200" />
+      )}
 
       {/* Controls */}
       {hasPermission && (

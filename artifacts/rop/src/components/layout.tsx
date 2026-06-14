@@ -12,12 +12,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-[100dvh] w-full flex flex-col bg-background text-foreground overflow-x-hidden">
       {demoMode && (
-        <div className="w-full bg-accent/20 text-accent text-center text-xs py-1 font-mono tracking-wider absolute top-0 z-50">
-          DEMO MODE ACTIVE
+        <div className="w-full bg-accent/20 text-accent border-b border-accent/30 absolute top-0 z-50 px-3 py-1.5">
+          <p className="text-center text-[11px] font-mono font-bold tracking-wider flex items-center justify-center gap-1.5">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+            Buildathon Demo Mode Active
+          </p>
+          <p className="text-center text-[9px] font-mono uppercase tracking-widest text-accent/80 mt-0.5">
+            Accelerated growth · Fast evolution · Boosted discovery
+          </p>
         </div>
       )}
 
-      <main className="flex-1 w-full max-w-md mx-auto relative flex flex-col pb-20 pt-4">
+      <main className={cn(
+        "flex-1 w-full max-w-md mx-auto relative flex flex-col pb-20 pt-4",
+        demoMode && "pt-12",
+      )}>
         <AnimatePresence mode="wait">
           <motion.div
             key={pathname}

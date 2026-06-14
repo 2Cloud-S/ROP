@@ -53,8 +53,11 @@ export default function Profile() {
 
       {demoMode && (
         <div className="mb-4 rounded-2xl border border-accent/40 bg-accent/10 px-4 py-3 text-center">
-          <p className="text-xs font-mono uppercase tracking-widest text-accent">
-            Demo Mode Active — 3× XP & boosted discovery
+          <p className="text-xs font-mono font-bold uppercase tracking-widest text-accent">
+            Buildathon Demo Mode Active
+          </p>
+          <p className="text-[10px] font-mono uppercase tracking-widest text-accent/80 mt-1">
+            Accelerated growth · Fast evolution · Boosted discovery
           </p>
         </div>
       )}

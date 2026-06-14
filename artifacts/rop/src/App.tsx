@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Leaf } from "lucide-react";
 
 import { Layout } from "@/components/layout";
+import { CelebrationLayer } from "@/components/celebration";
+import { Onboarding } from "@/components/onboarding";
 import Home from "@/pages/home";
 import Collection from "@/pages/collection";
 import Codex from "@/pages/codex";
@@ -65,19 +67,23 @@ function Router() {
   if (!initialized || loading) return <Splash />;
 
   return (
-    <Routes>
-      {/* AR is a full-screen overlay route, rendered outside the tabbed layout */}
-      <Route path="/ar" element={<AR />} />
-      <Route element={<LayoutRoute />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/collection" element={<Collection />} />
-        <Route path="/codex/:slug" element={<Codex />} />
-        <Route path="/tasks" element={<Tasks />} />
-        <Route path="/battle" element={<Battle />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="*" element={<NotFound />} />
-      </Route>
-    </Routes>
+    <>
+      <Routes>
+        {/* AR is a full-screen overlay route, rendered outside the tabbed layout */}
+        <Route path="/ar" element={<AR />} />
+        <Route element={<LayoutRoute />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/collection" element={<Collection />} />
+          <Route path="/codex/:slug" element={<Codex />} />
+          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/battle" element={<Battle />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+      <CelebrationLayer />
+      <Onboarding />
+    </>
   );
 }
 

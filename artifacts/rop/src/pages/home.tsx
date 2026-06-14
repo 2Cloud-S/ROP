@@ -47,10 +47,7 @@ export default function Home() {
           size="lg" 
           onClick={async () => {
             try {
-              const res = await discover();
-              if (res.newlyDiscovered) {
-                toast({ title: "New species discovered!", description: res.discovered?.name });
-              }
+              await discover();
             } catch (e: any) {
               toast({ title: "Discovery failed", description: e.message, variant: "destructive" });
             }
@@ -66,13 +63,8 @@ export default function Home() {
   const handleGrow = async (action: GrowthActionId) => {
     setIsGrowing(true);
     try {
-      const result = await grow(plant.id, action);
-      if (result.leveledUp) {
-        toast({
-          title: "Level Up!",
-          description: `Your plant reached level ${result.toLevel}`,
-        });
-      }
+      // Level-up celebration is surfaced globally via the celebration overlay.
+      await grow(plant.id, action);
     } catch (e: any) {
       toast({ title: "Growth failed", description: e.message, variant: "destructive" });
     } finally {
@@ -83,14 +75,8 @@ export default function Home() {
   const handleEvolve = async () => {
     setIsEvolving(true);
     try {
-      const res = await evolve(plant.id);
-      toast({
-        title: "Evolution Complete!",
-        description: `Your plant evolved into ${res.toSlug}!`,
-      });
-      if (res.newlyDiscovered) {
-        setTimeout(() => toast({ title: "New Species Documented!" }), 1000);
-      }
+      // Evolution + new-species celebration is surfaced globally via the overlay.
+      await evolve(plant.id);
     } catch (e: any) {
       toast({ title: "Evolution failed", description: e.message, variant: "destructive" });
     } finally {

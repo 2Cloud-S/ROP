@@ -21,6 +21,19 @@ import { loadPlayer, savePlayer, clearPlayer } from "@/lib/storage";
 import { isDemoMode } from "@/lib/demo";
 import { toast } from "@/hooks/use-toast";
 
+/**
+ * Client-side celebration events. These are derived from the
+ * server-authoritative action results and surfaced as full-screen overlays;
+ * they carry no game state of their own.
+ */
+export type Celebration =
+  | { id: number; kind: "evolution"; slug: string; newlyDiscovered: boolean }
+  | { id: number; kind: "discovery"; slug: string }
+  | { id: number; kind: "levelup"; level: number };
+
+let celebrationId = 0;
+const nextCelebrationId = () => ++celebrationId;
+
 /** Surface server-granted collection-milestone unlocks as toasts. */
 function announceMilestones(unlocks?: MilestoneUnlockInfo[]) {
   if (!unlocks?.length) return;
@@ -43,6 +56,9 @@ interface GameState {
 
   battle: BattleState | null;
   battleRewards: BattleActionResult["rewards"] | null;
+
+  celebrations: Celebration[];
+  dismissCelebration: () => void;
 
   init: () => Promise<void>;
   reset: () => Promise<void>;
@@ -78,6 +94,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   error: null,
   battle: null,
   battleRewards: null,
+  celebrations: [],
+
+  dismissCelebration: () =>
+    set((s) => ({ celebrations: s.celebrations.slice(1) })),
 
   init: async () => {
     if (get().initialized) return;
@@ -103,6 +123,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       initialized: false,
       battle: null,
       battleRewards: null,
+      celebrations: [],
       error: null,
     });
     await get().init();
@@ -125,6 +146,14 @@ export const useGameStore = create<GameState>((set, get) => ({
     const result = await api.growPlant(player, plantId, action, get().demoMode);
     persist(result.player);
     set({ player: result.player });
+    if (result.leveledUp) {
+      set((s) => ({
+        celebrations: [
+          ...s.celebrations,
+          { id: nextCelebrationId(), kind: "levelup", level: result.toLevel },
+        ],
+      }));
+    }
     return result;
   },
 
@@ -133,7 +162,18 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (!player) throw new ApiError(0, "NO_PLAYER", "No active game.");
     const result = await api.evolvePlant(player, plantId, get().demoMode);
     persist(result.player);
-    set({ player: result.player });
+    set((s) => ({
+      player: result.player,
+      celebrations: [
+        ...s.celebrations,
+        {
+          id: nextCelebrationId(),
+          kind: "evolution",
+          slug: result.toSlug,
+          newlyDiscovered: result.newlyDiscovered,
+        },
+      ],
+    }));
     announceMilestones(result.milestoneUnlocks);
     return result;
   },
@@ -152,6 +192,15 @@ export const useGameStore = create<GameState>((set, get) => ({
     const result = await api.completeTask(player, taskId, get().demoMode);
     persist(result.player);
     set({ player: result.player });
+    if (result.newlyDiscovered && result.discovered) {
+      const slug = result.discovered.slug;
+      set((s) => ({
+        celebrations: [
+          ...s.celebrations,
+          { id: nextCelebrationId(), kind: "discovery", slug },
+        ],
+      }));
+    }
     announceMilestones(result.milestoneUnlocks);
     return result;
   },
@@ -162,6 +211,15 @@ export const useGameStore = create<GameState>((set, get) => ({
     const result = await api.discover(player, get().demoMode);
     persist(result.player);
     set({ player: result.player });
+    if (result.newlyDiscovered && result.discovered) {
+      const slug = result.discovered.slug;
+      set((s) => ({
+        celebrations: [
+          ...s.celebrations,
+          { id: nextCelebrationId(), kind: "discovery", slug },
+        ],
+      }));
+    }
     announceMilestones(result.milestoneUnlocks);
     return result;
   },

@@ -1,0 +1,241 @@
+# Rise of the Plants — Polish & Buildathon Optimization Pass
+
+The core architecture, gameplay loop, Sanity integration, backend, and persistence systems are complete and approved.
+
+Do NOT perform architecture refactors.
+
+Do NOT redesign the data model.
+
+Do NOT replace existing systems.
+
+Do NOT introduce new major dependencies.
+
+Your task is now to maximize Buildathon judging impact and demo quality.
+
+---
+
+## Primary Goal
+
+Optimize Rise of the Plants for a 2–3 minute judge experience.
+
+A judge should be able to:
+
+1. Open the game
+2. Understand the concept immediately
+3. Complete a task
+4. Grow a plant
+5. Trigger an evolution
+6. Unlock a new species
+7. Read Codex lore loaded from Sanity
+8. Win a battle
+9. Open AR mode
+10. Leave impressed
+
+The project should feel magical, polished, and memorable.
+
+---
+
+# Priority 1 — Evolution Experience
+
+The evolution moment must become the strongest moment in the game.
+
+Enhance evolution presentation using existing systems.
+
+Add:
+
+- Glow effects
+- Particle effects
+- Scale animation
+- Smooth transformation animation
+- New rarity reveal
+- Species discovery celebration
+- Codex unlock feedback
+- XP burst effect
+- Level-up celebration
+
+Evolution should feel rewarding and dramatic.
+
+Goal:
+
+A judge should immediately recognize:
+
+"This is a major progression event."
+
+Do not make it feel like a simple level increase.
+
+---
+
+# Priority 2 — Discovery Experience
+
+When a new species is unlocked:
+
+Create a dedicated discovery reveal sequence.
+
+Display:
+
+- Species artwork
+- Species name
+- Rarity
+- Short lore excerpt
+- Discovery status
+- Button to view Codex
+
+Presentation should resemble a collectible creature discovery moment.
+
+The player should feel rewarded for progression.
+
+---
+
+# Priority 3 — Codex Polish
+
+The Codex is one of the strongest demonstrations of Sanity.
+
+Improve presentation.
+
+Ensure every Codex entry clearly displays:
+
+- Artwork
+- Name
+- Rarity
+- Habitat
+- Description
+- Lore
+- Evolution information
+
+Portable Text content from Sanity should render beautifully.
+
+Add a small informational note:
+
+"Content dynamically powered by Sanity."
+
+This should be tasteful and not intrusive.
+
+The goal is to make Sanity usage obvious to judges.
+
+---
+
+# Priority 4 — Collection Experience
+
+Improve collection satisfaction.
+
+Requirements:
+
+- Discovery counter prominently visible
+- Example: 5 / 13 Species Discovered
+- Animated progress updates
+- Locked species silhouettes
+- Clear rarity indicators
+- Smooth unlock transitions
+
+The collection should feel like a premium creature encyclopedia.
+
+---
+
+# Priority 5 — Demo Mode Experience
+
+Enhance ?demo=true mode.
+
+When active:
+
+Show a visible banner:
+
+"Buildathon Demo Mode Active"
+
+Display:
+
+- Accelerated progression
+- Fast evolutions
+- Increased discovery rates
+
+A judge should understand immediately that the experience has been optimized for demonstration.
+
+---
+
+# Priority 6 — Judge Onboarding
+
+Improve first-time onboarding.
+
+Landing page should clearly communicate:
+
+Rise of the Plants combines:
+
+- Magical plant collection
+- Growth and evolution
+- Structured content powered by Sanity
+- AR plant placement
+- Creature battles
+
+Built for the Replit × Sanity Buildathon.
+
+The concept should be understandable within 10 seconds.
+
+---
+
+# Priority 7 — Battle Feedback
+
+Do not redesign combat.
+
+Improve feedback only.
+
+Add:
+
+- Better hit reactions
+- Damage feedback
+- Turn transitions
+- Victory celebration
+- Species unlock reveal if applicable
+
+Battles should feel responsive and rewarding.
+
+---
+
+# Priority 8 — AR Presentation
+
+Do not expand AR scope.
+
+Do not implement advanced WebXR features.
+
+Keep current architecture.
+
+Improve only:
+
+- Loading state
+- Placement instructions
+- Screenshot experience
+- Visual presentation
+
+AR must remain stable and demo-friendly.
+
+---
+
+# Explicitly Avoid
+
+Do NOT:
+
+- Refactor backend architecture
+- Refactor frontend architecture
+- Change Sanity schemas
+- Replace local persistence
+- Add authentication
+- Add multiplayer
+- Add trading
+- Add monetization
+- Add crafting
+- Add location systems
+- Add new game systems
+
+Focus entirely on polish, presentation, onboarding, and judge experience.
+
+---
+
+# Deliverables
+
+After implementation provide:
+
+1. Summary of improvements
+2. Screens updated
+3. Components updated
+4. Demo flow walkthrough
+5. Remaining polish opportunities ranked by impact
+
+Prioritize maximum Buildathon impact over technical perfection.
