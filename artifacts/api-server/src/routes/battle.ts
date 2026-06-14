@@ -2,6 +2,7 @@ import { Router, type IRouter } from "express";
 import { StartBattleBody, BattleActionBody } from "@workspace/game-core";
 import { asyncHandler, sendData } from "../lib/envelope";
 import { startBattle, performBattleAction } from "../services/battleService";
+import { applyMilestones } from "../lib/milestones";
 
 const router: IRouter = Router();
 
@@ -24,7 +25,12 @@ router.post(
       body.action,
       body.demoMode,
     );
-    sendData(res, result);
+    const m = await applyMilestones(result.player, body.demoMode);
+    sendData(res, {
+      ...result,
+      player: m.player,
+      milestoneUnlocks: m.milestoneUnlocks,
+    });
   }),
 );
 

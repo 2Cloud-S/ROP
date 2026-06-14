@@ -69,17 +69,29 @@ async function request<T>(
   return json.data;
 }
 
+export interface MilestoneUnlockInfo {
+  milestone: number;
+  slug: string;
+  species: SpeciesContent | null;
+}
+
 export interface TaskResult {
   player: PlayerSave;
   reward: { kind: string; amount: number };
   discovered: SpeciesContent | null;
   newlyDiscovered: boolean;
+  milestoneUnlocks?: MilestoneUnlockInfo[];
 }
 
 export interface DiscoveryResult {
   player: PlayerSave;
   discovered: SpeciesContent | null;
   newlyDiscovered: boolean;
+  milestoneUnlocks?: MilestoneUnlockInfo[];
+}
+
+export interface EvolveResult extends EvolutionResult {
+  milestoneUnlocks?: MilestoneUnlockInfo[];
 }
 
 export interface BattleRewards {
@@ -94,6 +106,7 @@ export interface BattleActionResult {
   battle: BattleState;
   player: PlayerSave;
   rewards?: BattleRewards;
+  milestoneUnlocks?: MilestoneUnlockInfo[];
 }
 
 export const api = {
@@ -127,7 +140,7 @@ export const api = {
     }),
 
   evolvePlant: (player: PlayerSave, plantId: string, demoMode: boolean) =>
-    request<EvolutionResult>("/plants/evolve", {
+    request<EvolveResult>("/plants/evolve", {
       method: "POST",
       body: { player, plantId, demoMode },
     }),

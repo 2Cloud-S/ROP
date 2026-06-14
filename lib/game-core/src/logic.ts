@@ -278,6 +278,57 @@ export function addDiscovery(player: PlayerSave, slug: string): {
   return { player: next, newlyDiscovered: true };
 }
 
+export interface MilestoneUnlock {
+  milestone: number;
+  slug: string;
+}
+
+/**
+ * Collection milestones (3/6/10/13 discoveries) each grant one bonus discovery
+ * roll. This is server-authoritative and idempotent: a milestone is recorded in
+ * `player.achievements` (`milestone:<count>`) the first time it is reached, so it
+ * never re-rolls on later stateless requests. A milestone bonus can itself push
+ * the count across the next threshold, so we loop until no further milestone is
+ * crossed. The marker is written even when the roster is exhausted (no candidate
+ * left) to avoid re-rolling forever.
+ */
+export function processMilestoneUnlocks(
+  player: PlayerSave,
+  candidates: { slug: string; rarity: Rarity }[],
+  demoMode: boolean,
+  rng: Rng = Math.random,
+): { player: PlayerSave; unlocks: MilestoneUnlock[] } {
+  let next: PlayerSave = structuredClone(player);
+  const unlocks: MilestoneUnlock[] = [];
+  const thresholds = MILESTONES.filter((m) => m.count > 0);
+
+  let progressed = true;
+  while (progressed) {
+    progressed = false;
+    for (const m of thresholds) {
+      const key = `milestone:${m.count}`;
+      if (next.discoveries.length < m.count) continue;
+      if (next.achievements.includes(key)) continue;
+
+      next.achievements.push(key);
+      const undiscovered = candidates.filter(
+        (c) => !next.discoveries.includes(c.slug),
+      );
+      const slug = rollDiscovery(undiscovered, demoMode, rng);
+      if (slug) {
+        const res = addDiscovery(next, slug);
+        next = res.player;
+        if (res.newlyDiscovered) {
+          unlocks.push({ milestone: m.count, slug });
+          progressed = true;
+        }
+      }
+    }
+  }
+
+  return { player: next, unlocks };
+}
+
 /* ----------------------------- Resources / Tasks ----------------------------- */
 
 export function addResources(

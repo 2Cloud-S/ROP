@@ -14,9 +14,25 @@ import {
   type TaskResult,
   type DiscoveryResult,
   type BattleActionResult,
+  type EvolveResult,
+  type MilestoneUnlockInfo,
 } from "@/lib/api";
 import { loadPlayer, savePlayer, clearPlayer } from "@/lib/storage";
 import { isDemoMode } from "@/lib/demo";
+import { toast } from "@/hooks/use-toast";
+
+/** Surface server-granted collection-milestone unlocks as toasts. */
+function announceMilestones(unlocks?: MilestoneUnlockInfo[]) {
+  if (!unlocks?.length) return;
+  for (const u of unlocks) {
+    toast({
+      title: `Milestone reached: ${u.milestone} discovered!`,
+      description: u.species
+        ? `Bonus species unlocked: ${u.species.name}`
+        : "Bonus species unlocked!",
+    });
+  }
+}
 
 interface GameState {
   player: PlayerSave | null;
@@ -118,6 +134,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     const result = await api.evolvePlant(player, plantId, get().demoMode);
     persist(result.player);
     set({ player: result.player });
+    announceMilestones(result.milestoneUnlocks);
     return result;
   },
 
@@ -135,6 +152,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     const result = await api.completeTask(player, taskId, get().demoMode);
     persist(result.player);
     set({ player: result.player });
+    announceMilestones(result.milestoneUnlocks);
     return result;
   },
 
@@ -144,6 +162,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     const result = await api.discover(player, get().demoMode);
     persist(result.player);
     set({ player: result.player });
+    announceMilestones(result.milestoneUnlocks);
     return result;
   },
 
@@ -167,6 +186,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       battle: result.battle,
       battleRewards: result.rewards ?? get().battleRewards,
     });
+    announceMilestones(result.milestoneUnlocks);
     return result;
   },
 

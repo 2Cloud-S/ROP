@@ -6,6 +6,7 @@ import {
 } from "@workspace/game-core";
 import { asyncHandler, sendData, AppError } from "../lib/envelope";
 import { growPlant, evolvePlant } from "../services/plantService";
+import { applyMilestones } from "../lib/milestones";
 
 const router: IRouter = Router();
 
@@ -23,7 +24,12 @@ router.post(
   asyncHandler(async (req, res) => {
     const body = EvolvePlantBody.parse(req.body);
     const result = await evolvePlant(body.player, body.plantId, body.demoMode);
-    sendData(res, result);
+    const m = await applyMilestones(result.player, body.demoMode);
+    sendData(res, {
+      ...result,
+      player: m.player,
+      milestoneUnlocks: m.milestoneUnlocks,
+    });
   }),
 );
 
