@@ -5,3 +5,4 @@
 - [Stateless authority guard](stateless-authority-guard.md) — reward endpoints must reject already-terminal client-posted state; Zod validation alone doesn't stop forged "won" battles.
 - [Sanity CDN cache poisoning](sanity-cdn-cache-poisoning.md) — never cache empty content arrays; a seed/CDN cold-start [] poisons the cache for the full TTL.
 - [Sanity content no-hardcode](sanity-content-no-hardcode.md) — task rewards/cooldowns, codex lore, economy must be runtime-resolved from Sanity/spec; hardcoding gets review-rejected.
+- [ROP path routing connectivity](rop-path-routing-connectivity.md) — web app's same-origin /api base is correct; path-based artifact routing bridges to backend, no proxy/port config (don't "fix" it).

@@ -15,6 +15,12 @@ import type {
   CodexContent,
 } from "@workspace/sanity-content";
 
+// Same-origin API base. This monorepo uses Replit path-based artifact routing:
+// the api-server artifact declares `paths = ["/api"]` and this web artifact
+// declares `paths = ["/"]`, so the shared proxy (dev) and the application
+// deployment router (prod) route `/api/*` to the backend and everything else to
+// this SPA. There is therefore NO separate API origin/port to configure and no
+// Vite proxy needed — `${BASE_URL}api` is the correct, platform-recommended base.
 const API_BASE = `${import.meta.env.BASE_URL}api`;
 
 export class ApiError extends Error {
