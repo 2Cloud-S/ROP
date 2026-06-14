@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "wouter";
 import { useGameStore } from "@/store/gameStore";
-import { useSpeciesBySlug } from "@/hooks/useContent";
-import { GROWTH_ACTIONS, LEVEL_TOTAL_XP } from "@workspace/game-core";
+import { useSpeciesBySlug, useEvolutions } from "@/hooks/useContent";
+import { GROWTH_ACTIONS, LEVEL_TOTAL_XP, nextEvolution } from "@workspace/game-core";
 import { PlantVisual } from "@/components/plant-visual";
 import { ResourceBar } from "@/components/resource-bar";
 import { Button } from "@/components/ui/button";
@@ -16,11 +16,20 @@ export default function Home() {
   const { toast } = useToast();
   const plant = activePlant();
   const { data: species, isLoading } = useSpeciesBySlug(plant?.speciesSlug);
-  
+  const { data: evolutions } = useEvolutions();
+
   const [isGrowing, setIsGrowing] = useState(false);
   const [isEvolving, setIsEvolving] = useState(false);
-  const [evolutionReady, setEvolutionReady] = useState(false);
   const [discoveryPrompt, setDiscoveryPrompt] = useState(false);
+
+  // Evolution eligibility is derived from the current plant + evolution paths,
+  // not transient state, so it survives navigation/reload and stays in sync
+  // with the server-authoritative rules.
+  const evolutionChain = (evolutions ?? [])
+    .filter((e) => e.from === plant?.speciesSlug)
+    .map((e) => ({ toSlug: e.to, requiredLevel: e.requiredLevel }));
+  const evolutionReady =
+    !!plant && nextEvolution(plant, evolutionChain, demoMode) !== null;
 
   if (!player) return null;
 
@@ -64,9 +73,6 @@ export default function Home() {
           description: `Your plant reached level ${result.toLevel}`,
         });
       }
-      if (result.evolutionReady) {
-        setEvolutionReady(true);
-      }
     } catch (e: any) {
       toast({ title: "Growth failed", description: e.message, variant: "destructive" });
     } finally {
@@ -78,7 +84,6 @@ export default function Home() {
     setIsEvolving(true);
     try {
       const res = await evolve(plant.id);
-      setEvolutionReady(false);
       toast({
         title: "Evolution Complete!",
         description: `Your plant evolved into ${res.toSlug}!`,
