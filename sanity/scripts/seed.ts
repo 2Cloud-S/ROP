@@ -141,6 +141,7 @@ async function seed() {
       icon: t.icon,
       rewardType: t.rewardType,
       rewardAmount: t.rewardAmount,
+      cooldownHours: t.cooldownHours ?? 0,
       category: t.category,
       difficulty: t.difficulty,
     });

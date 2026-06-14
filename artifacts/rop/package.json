@@ -76,5 +76,8 @@
     "wouter": "^3.3.5",
     "zod": "catalog:",
     "zustand": "^5.0.2"
+  },
+  "dependencies": {
+    "@portabletext/react": "^6.2.0"
   }
 }

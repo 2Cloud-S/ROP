@@ -42,6 +42,7 @@ export interface TaskContent {
   icon?: string;
   rewardType?: string;
   rewardAmount?: number;
+  cooldownHours?: number;
   category?: string;
   difficulty?: string;
 }

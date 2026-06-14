@@ -42,16 +42,17 @@ export const XP_PER_RESOURCE = 2;
 export type GrowthActionId = "nurture" | "tend" | "flourish";
 
 /**
- * Growth actions. Cost is applied to all three resources equally.
- * xp = cost * 3 (resources) * XP_PER_RESOURCE.
+ * Growth actions. `cost` is the total number of resources consumed from the
+ * combined pool (water + nutrients + sunlight). Per the economy spec
+ * (1 resource = 2 XP), xp = cost * XP_PER_RESOURCE, i.e. 2/5/10 → 4/10/20.
  */
 export const GROWTH_ACTIONS: Record<
   GrowthActionId,
   { id: GrowthActionId; label: string; cost: number; xp: number }
 > = {
-  nurture: { id: "nurture", label: "Nurture", cost: 2, xp: 12 },
-  tend: { id: "tend", label: "Tend", cost: 5, xp: 30 },
-  flourish: { id: "flourish", label: "Flourish", cost: 10, xp: 60 },
+  nurture: { id: "nurture", label: "Nurture", cost: 2, xp: 4 },
+  tend: { id: "tend", label: "Tend", cost: 5, xp: 10 },
+  flourish: { id: "flourish", label: "Flourish", cost: 10, xp: 20 },
 };
 
 export const DEMO_XP_MULTIPLIER = 3;
@@ -90,19 +91,19 @@ export const BATTLE_REWARDS = {
   rareDiscoveryChance: 0.1,
 } as const;
 
-/** Task reward definitions. Server validates rewards against this table. */
-export type TaskRewardKind = "water" | "nutrients" | "sunlight" | "mixed" | "discovery";
-
-export const TASK_REWARDS: Record<
-  string,
-  { kind: TaskRewardKind; amount: number; cooldownHours?: number }
-> = {
-  "drink-water": { kind: "water", amount: 10 },
-  exercise: { kind: "nutrients", amount: 10 },
-  "study-session": { kind: "sunlight", amount: 10 },
-  "daily-check-in": { kind: "mixed", amount: 5, cooldownHours: 24 },
-  "nature-walk": { kind: "discovery", amount: 0, cooldownHours: 1 },
-};
+/**
+ * Allowed task reward kinds. The reward *values* (type, amount, cooldown) are
+ * authored in Sanity (the content source of truth) and resolved at runtime by
+ * the backend — they are intentionally NOT hard-coded here.
+ */
+export const TASK_REWARD_KINDS = [
+  "water",
+  "nutrients",
+  "sunlight",
+  "mixed",
+  "discovery",
+] as const;
+export type TaskRewardKind = (typeof TASK_REWARD_KINDS)[number];
 
 /** Collection milestones → player titles. */
 export const MILESTONES: readonly { count: number; title: string }[] = [

@@ -1,8 +1,8 @@
 import {
-  TASK_REWARDS,
   addResources,
   addDiscovery,
   rollDiscovery,
+  TASK_REWARD_KINDS,
   type PlayerSave,
 } from "@workspace/game-core";
 import type { SpeciesContent } from "@workspace/sanity-content";
@@ -24,17 +24,38 @@ export async function completeTask(
   taskId: string,
   demoMode: boolean,
 ): Promise<TaskResult> {
-  const reward = TASK_REWARDS[taskId];
-  if (!reward) {
+  // Sanity is the source of truth for task rewards/cooldowns.
+  const tasks = await ContentAPI.tasks();
+  const task = tasks.find((t) => t.id === taskId);
+  if (!task) {
     throw new AppError(400, "INVALID_TASK", `Unknown task: ${taskId}`);
   }
 
+  const kind = task.rewardType ?? "";
+  if (!(TASK_REWARD_KINDS as readonly string[]).includes(kind)) {
+    throw new AppError(
+      400,
+      "INVALID_TASK",
+      `Task "${taskId}" has an unsupported reward type.`,
+    );
+  }
+
+  const amount = task.rewardAmount ?? 0;
+  if (!Number.isFinite(amount) || amount < 0 || amount > 1000) {
+    throw new AppError(
+      400,
+      "INVALID_TASK",
+      `Task "${taskId}" has an out-of-range reward amount.`,
+    );
+  }
+  const cooldownHours = task.cooldownHours ?? 0;
+
   const now = Date.now();
-  if (reward.cooldownHours) {
+  if (cooldownHours > 0) {
     const last = player.lastTaskAt[taskId];
     if (last) {
       const elapsedHours = (now - new Date(last).getTime()) / HOUR_MS;
-      if (elapsedHours < reward.cooldownHours) {
+      if (elapsedHours < cooldownHours) {
         throw new AppError(
           429,
           "TASK_ON_COOLDOWN",
@@ -48,23 +69,23 @@ export async function completeTask(
   let discovered: SpeciesContent | null = null;
   let newlyDiscovered = false;
 
-  switch (reward.kind) {
+  switch (kind) {
     case "water":
-      next.resources = addResources(next.resources, { water: reward.amount });
+      next.resources = addResources(next.resources, { water: amount });
       break;
     case "nutrients":
       next.resources = addResources(next.resources, {
-        nutrients: reward.amount,
+        nutrients: amount,
       });
       break;
     case "sunlight":
-      next.resources = addResources(next.resources, { sunlight: reward.amount });
+      next.resources = addResources(next.resources, { sunlight: amount });
       break;
     case "mixed":
       next.resources = addResources(next.resources, {
-        water: reward.amount,
-        nutrients: reward.amount,
-        sunlight: reward.amount,
+        water: amount,
+        nutrients: amount,
+        sunlight: amount,
       });
       break;
     case "discovery": {
@@ -85,7 +106,7 @@ export async function completeTask(
 
   return {
     player: next,
-    reward: { kind: reward.kind, amount: reward.amount },
+    reward: { kind, amount },
     discovered,
     newlyDiscovered,
   };

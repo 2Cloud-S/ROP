@@ -4,3 +4,4 @@
 - [ROP content via backend](rop-content-via-backend.md) — frontend reads Sanity only through cached /api/content/*; no VITE_SANITY_* env; app can't boot until dataset seeded (createSession needs species).
 - [Stateless authority guard](stateless-authority-guard.md) — reward endpoints must reject already-terminal client-posted state; Zod validation alone doesn't stop forged "won" battles.
 - [Sanity CDN cache poisoning](sanity-cdn-cache-poisoning.md) — never cache empty content arrays; a seed/CDN cold-start [] poisons the cache for the full TTL.
+- [Sanity content no-hardcode](sanity-content-no-hardcode.md) — task rewards/cooldowns, codex lore, economy must be runtime-resolved from Sanity/spec; hardcoding gets review-rejected.

@@ -123,17 +123,26 @@ export function applyGrowth(
   const plant = findPlant(next, plantId);
   const action = GROWTH_ACTIONS[actionId];
 
+  // Growth draws `cost` resources from the combined pool (water+nutrients+sunlight),
+  // converting them to XP at 1 resource = 2 XP (economy spec).
   const { water, nutrients, sunlight } = next.resources;
-  if (water < action.cost || nutrients < action.cost || sunlight < action.cost) {
+  if (water + nutrients + sunlight < action.cost) {
     throw new GameError(
       "INSUFFICIENT_RESOURCES",
       "Not enough resources for this action",
     );
   }
 
-  next.resources.water -= action.cost;
-  next.resources.nutrients -= action.cost;
-  next.resources.sunlight -= action.cost;
+  let remaining = action.cost;
+  const takeWater = Math.min(next.resources.water, remaining);
+  next.resources.water -= takeWater;
+  remaining -= takeWater;
+  const takeNutrients = Math.min(next.resources.nutrients, remaining);
+  next.resources.nutrients -= takeNutrients;
+  remaining -= takeNutrients;
+  const takeSunlight = Math.min(next.resources.sunlight, remaining);
+  next.resources.sunlight -= takeSunlight;
+  remaining -= takeSunlight;
 
   const xpGained = action.xp * (demoMode ? DEMO_XP_MULTIPLIER : 1);
   const fromLevel = plant.level;

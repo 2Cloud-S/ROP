@@ -35,6 +35,12 @@ export const task = defineType({
       },
     }),
     defineField({ name: "rewardAmount", title: "Reward Amount", type: "number" }),
+    defineField({
+      name: "cooldownHours",
+      title: "Cooldown (hours)",
+      type: "number",
+      description: "Minimum hours before this task can be completed again (0 = repeatable)",
+    }),
     defineField({ name: "category", title: "Category", type: "string" }),
     defineField({
       name: "difficulty",

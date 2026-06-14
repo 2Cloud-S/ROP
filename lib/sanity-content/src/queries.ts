@@ -41,6 +41,7 @@ export const TASKS_QUERY = `*[_type == "task"] | order(category asc, title asc){
   icon,
   rewardType,
   rewardAmount,
+  "cooldownHours": coalesce(cooldownHours, 0),
   category,
   difficulty
 }`;

@@ -6,7 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import { ResourceBar } from "@/components/resource-bar";
 import { Droplets, Sprout, Sun, CheckCircle2, Clock, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { TASK_REWARDS } from "@workspace/game-core";
 
 export default function Tasks() {
   const player = useGameStore((s) => s.player);
@@ -68,8 +67,7 @@ export default function Tasks() {
           tasks.map((task, i) => {
             const lastDoneStr = player.lastTaskAt[task.id];
             const lastDone = lastDoneStr ? new Date(lastDoneStr).getTime() : 0;
-            const rewardDef = TASK_REWARDS[task.id];
-            const cooldownHours = rewardDef?.cooldownHours || 0;
+            const cooldownHours = task.cooldownHours || 0;
             const cooldownMs = cooldownHours * 60 * 60 * 1000;
             const now = Date.now();
             const timeSince = now - lastDone;
@@ -97,9 +95,11 @@ export default function Tasks() {
                     <p className="text-xs text-muted-foreground leading-snug mb-2">{task.description}</p>
                   )}
                   <div className="flex items-center gap-1.5 bg-background border border-border w-fit px-2 py-1 rounded-md">
-                    {rewardDef && getRewardIcon(rewardDef.kind)}
+                    {task.rewardType && getRewardIcon(task.rewardType)}
                     <span className="font-mono text-xs font-bold">
-                      +{rewardDef?.amount || 0} {rewardDef?.kind}
+                      {task.rewardType === "discovery"
+                        ? "Discovery"
+                        : `+${task.rewardAmount ?? 0} ${task.rewardType ?? ""}`}
                     </span>
                   </div>
                 </div>

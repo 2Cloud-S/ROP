@@ -6,6 +6,7 @@ import { PlantVisual } from "@/components/plant-visual";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Shield, Sword, Heart } from "lucide-react";
 import { motion } from "framer-motion";
+import { PortableText } from "@portabletext/react";
 
 export default function Codex() {
   const { slug } = useParams();
@@ -67,6 +68,15 @@ export default function Codex() {
             <p className="text-foreground/80 leading-relaxed">
               {species.description || "No description available."}
             </p>
+
+            {codex?.lore && codex.lore.length > 0 && (
+              <div className="bg-card border border-border p-4 rounded-xl">
+                <h3 className="font-bold text-sm mb-2 text-primary">Lore</h3>
+                <div className="prose prose-invert prose-sm max-w-none text-sm text-foreground/80 leading-relaxed space-y-3">
+                  <PortableText value={codex.lore as any} />
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-3 gap-3">
               <StatCard icon={<Sword size={16}/>} label="ATTACK" value={species.attack} />

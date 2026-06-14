@@ -49,6 +49,7 @@ export interface TaskSeed {
   icon: string;
   rewardType: string;
   rewardAmount: number;
+  cooldownHours?: number;
   category: string;
   difficulty: string;
 }
@@ -402,6 +403,7 @@ export const tasks: TaskSeed[] = [
     icon: "🌙",
     rewardType: "mixed",
     rewardAmount: 5,
+    cooldownHours: 24,
     category: "daily",
     difficulty: "easy",
   },
@@ -412,6 +414,7 @@ export const tasks: TaskSeed[] = [
     icon: "🍃",
     rewardType: "discovery",
     rewardAmount: 0,
+    cooldownHours: 1,
     category: "exploration",
     difficulty: "easy",
   },
