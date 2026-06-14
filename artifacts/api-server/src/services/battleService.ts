@@ -131,7 +131,7 @@ export async function performBattleAction(
   }
 
   // Lost
-  const xp = BATTLE_REWARDS.defeat.xp;
+  const xp = BATTLE_REWARDS.defeat.xp * mult;
   if (active) {
     active.xp += xp;
     active.level = levelForXp(active.xp);

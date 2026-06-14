@@ -170,7 +170,7 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-3 gap-2">
             {(Object.values(GROWTH_ACTIONS) as typeof GROWTH_ACTIONS[GrowthActionId][]).map((action) => {
-              const canAfford = player.resources.water >= action.cost && player.resources.nutrients >= action.cost && player.resources.sunlight >= action.cost;
+              const canAfford = player.resources.water + player.resources.nutrients + player.resources.sunlight >= action.cost;
               return (
                 <Button 
                   key={action.id}
