@@ -2,7 +2,7 @@
 
 > A mobile-first web game where you discover, grow, and evolve a collection of living botanical creatures — then project them into the real world with your camera.
 
-Built for the **Replit × Sanity Buildathon**. Content is powered entirely by [Sanity](https://www.sanity.io/), gameplay is enforced by a stateless authoritative backend, and your progress lives right in your browser.
+Content is powered entirely by [Sanity](https://www.sanity.io/), gameplay is enforced by a stateless authoritative backend, and your progress lives right in your browser.
 
 ---
 
