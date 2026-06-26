@@ -105,4 +105,4 @@ For the best experience, open the game in its own browser tab on a phone rather 
 
 ## 📄 License
 
-Created for the Replit × Sanity Buildathon.
+MIT
